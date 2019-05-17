@@ -2,8 +2,11 @@
 
 import vcf
 
-__author__ = 'XXX'
+__author__ = 'Eva V. Lehner'
 
+vcfFile_IN = '../data/chr22_new.vcf'
+print(vcfFile_IN)
+vcfFile2 = '../data/chr21_new.vcf'
 
 class Assignment2:
     
@@ -12,12 +15,25 @@ class Assignment2:
         print("PyVCF version: %s" % vcf.VERSION)
         
 
-    def get_average_quality_of_file(self):
+    def get_average_quality_of_file(self, vcfFile):
         '''
         Get the average PHRED quality of all variants
+
+        # iterate over file?
+        # PHRED quality of variant is at col 6
+
         :return:
-        '''    
-        print("TODO")
+        '''
+        vcfReader = vcf.Reader(open(vcfFile), 'r')
+
+        totalQuality = 0
+        nEntries = 0
+        for record in vcfReader:
+            totalQuality += record.QUAL
+            nEntries += 1
+
+        averageQuality = totalQuality / nEntries
+        return averageQuality
         
         
     def get_total_number_of_variants_of_file(self):
@@ -78,6 +94,9 @@ class Assignment2:
         
     
     def print_summary(self):
+        averageQuality = self.get_average_quality_of_file(vcfFile_IN)
+
+        print("Summary Statistics: \n\t average phred Quality of variants: %s \n\t " % (averageQuality))
         print("Print all results here")
     
     

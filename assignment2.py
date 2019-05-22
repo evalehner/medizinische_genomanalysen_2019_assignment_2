@@ -17,7 +17,6 @@ class Assignment2:
         self.currentVCF = vcfFile
         self.VCF2Merge = vcfFile_to_Merge
         self.mergedVCF = mergedFilename
-        
 
     def get_average_quality_of_file(self):
         # Get the average PHRED quality of all variants
@@ -34,8 +33,10 @@ class Assignment2:
         averageQuality = totalQuality / nEntries
         return averageQuality
 
-    def get_total_number_of_variants_of_file(self):
-        vcfReader = vcf.Reader(open(self.currentVCF), 'r')
+    def get_total_number_of_variants_of_file(self, file ):
+
+        file = self.currentVCF
+        vcfReader = vcf.Reader(open(file), 'r')
 
         nVariants = 0
         for record in vcfReader:
@@ -100,45 +101,32 @@ class Assignment2:
         Creates one VCF containing all variants of chr21 and chr22
         :return:
         '''
-        f = open(self.mergedVCF, 'w')
-        cat = shlex.split('cat ' +  self.currentVCF + ' ' + self.VCF2Merge )
-        #subprocess.Popen(cat, stdout=f)
-        f.close()
+        f_out = open(self.mergedVCF, 'w+')
+        f_in1 = open(self.currentVCF, 'r')
+        f_in2 = open(self.VCF2Merge, 'r')
 
-        #ntotalVariants = self.get_total_number_of_variants_of_file(fileOut)
+        for line in f_in1.readlines():
+            f_out.write(line)
+        for line in f_in2.readlines():
+            f_out.write(line)
+        f_out.close()
+        f_in1.close()
+        f_in2.close()
 
-        #print("Number of total variants in merged File \n\t  %s \n\t " % (ntotalVariants))
-        print("TO DO")
-    
+        ntotalVariants = self.get_total_number_of_variants_of_file(self.mergedVCF)
+
+        print("Number of total variants in merged File \n\t  %s " % (ntotalVariants))
+
     def print_summary(self):
-        #averageQuality = self.get_average_quality_of_file()
-        #print("Summary Statistics: \n\t average phred Quality of variants: %s \n\t " % (averageQuality))
-
-        #variantCaller = self.get_variant_caller_of_vcf()
-        # printing is ugly
-        #print("List of Variant Callers generating this vcf : \n\t  %s \n\t " % (variantCaller))
-
-        #ref = self.get_human_reference_version()
-        #print("Reference Genome used: \n\t  %s \n\t " % (ref))
-
-        #nVariants = self.get_total_number_of_variants_of_file()
-        #print("Total Number of Variants: \n\t  %s \n\t " % (nVariants))
-
-        #nIndels = self.get_number_of_indels()
-        #print("Number of Indels: \n\t  %s \n\t " % (nIndels))
-
-        #nSnvs = self.get_number_of_snvs()
-        #print("Number of SNVs / SNPs: \n\t  %s \n\t " % (nSnvs))
-
-        #nHeterozygous_Variants = self.get_number_of_heterozygous_variants()
-        #print("Number of Heterozygous Variants: \n\t  %s \n\t " % (nHeterozygous_Variants))
-
+        print("Summary Statistics: \n average phred Quality of variants: %s  " % (self.get_average_quality_of_file()))
+        print("List of Variant Callers generating this vcf : \n\t  %s  " % (self.get_variant_caller_of_vcf()))
+        print("Reference Genome used: \n\t  %s  " % (self.get_human_reference_version()))
+        print("Total Number of Variants: \n\t  %s  " % (self.get_total_number_of_variants_of_file(self.currentVCF)))
+        print("Number of Indels: \n\t  %s  " % (self.get_number_of_indels()))
+        print("Number of SNVs / SNPs: \n\t  %s " % (self.get_number_of_snvs()))
+        print("Number of Heterozygous Variants: \n\t  %s  " % (self.get_number_of_heterozygous_variants()))
         self.merge_chrs_into_one_vcf()
 
-
-        print("Print all results here")
-    
-    
 def main():
     print("Assignment 2")
     assignment2 = Assignment2(vcfFile_IN, vcfFile2, "MergedFile_Test.vcf")
